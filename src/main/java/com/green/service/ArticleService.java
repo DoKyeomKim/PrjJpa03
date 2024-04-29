@@ -39,7 +39,7 @@ public class ArticleService {
 		// create 는 생성요청이고 번호 자동증가이므로 번호 필요없다
 		// 그래서 id 가 존재하면 안된다
 		if( article.getId() != null  )
-			return null;
+			return null; // 아이디가 존재하면 error를 발생시킨다
 		
 		Article  saved = articleRepository.save(article);			
 		return   saved;
@@ -67,9 +67,22 @@ public class ArticleService {
 		return updated;
 	}
 
-	public Article delete(ArticleForm dto) {
+
+	public Article delete(Long id) {
+		// 1. 타겟(기존글)의 ID로 조회하기
+		Article target = articleRepository.findById(id).orElse(null);
+	
+		// 2. 잘못된 요청을 처리
+		// 조회한 자료가 없거나 id가 틀리면
+		if (target==null) {
+			return null; 
+		}
 		
-		return null;
+		// 3. 업데이트 및 정상응답(ok)
+		articleRepository.delete(target);
+		
+		return target;
+
 	}
 	
 }

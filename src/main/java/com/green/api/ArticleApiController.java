@@ -78,8 +78,15 @@ public class ArticleApiController {
 	// DELETE   : DELETE
 	@DeleteMapping("/api/articles/{id}")
 	public ResponseEntity<Article> delete(@PathVariable Long id, @RequestBody ArticleForm dto){
-		Article delete = articleService.delete(dto);
-
+		
+		Article deleted = articleService.delete(id);
+		
+		ResponseEntity<Article> result
+		   = ( deleted != null  ) 
+		   ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()     
+		   : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		
+		return result;
 	}
 }
 

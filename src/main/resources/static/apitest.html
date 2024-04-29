@@ -3,6 +3,18 @@
 <head>
 <meta charset="UTF-8">
 <title>Insert title here</title>
+<style>
+table {width:80%; margin:0 auto;}
+table, th, td{
+border : 1px solid #ccc;
+}
+td{padding:10px;}
+tr:hover:not(tr:first-child) {background : yellow;}
+tr:first-child{
+background : #000 ;
+color : #fff ;
+}
+</style>
 </head>
 <body>
   <h2>Articles API tester</h2>
@@ -41,9 +53,23 @@
             case "get":
         	    fetch(aEl.href)  // == fetch(aEl.href, { method:'GET'})
 	             .then( response => response.json() )
-	             .then( json     => {
-	                 console.dir(json)
-	                 outputEl.innerHTML = JSON.stringify( json );
+	             .then( articleList     => {
+	                 console.dir(articleList)
+	                 
+	                 let html = JSON.stringify(articleList) + "<br>"
+	                 html +="<table>"
+	                 html +="<tr><td>아이디</td><td>제목</td><td>내용</td>"
+	                 articleList.forEach((article, i)=>{
+	                 html 	 +=  "<tr>"
+	                 html 	 +=  "<td>"+ article.id +"</td>"
+	                 html 	 +=  "<td>"+ article.title +"</td>"
+	                 html 	 +=  "<td>"+ article.content +"</td>"
+	                 html 	 +=  "</tr>"
+	                 })
+	                 
+	                 html +="</table>"
+	                 outputEl.innerHTML = html;
+	                 //outputEl.innerHTML = JSON.stringify( articleList );
 	             } )
 	            .catch( error   => console.dir(error));
 	            break;            
@@ -87,7 +113,9 @@
 	                 console.dir(json)
 	                 outputEl.innerHTML = JSON.stringify( json );
 	             } )
-	             .catch( error   => console.dir(error));
+	             .catch( error   => {
+	            	 alert("!!!!! 저장실패 !!!!!")            		 
+	             });
 	            break;
             
             
@@ -140,17 +168,48 @@
             		})
             }
             //fetch(aEl.href, new URLSearchParams(params) )
-            fetch(aEl.href, params )
-             .then( response => response.json() )
-             .then( json     => {
-                 console.dir(json)
-                 outputEl.innerHTML = JSON.stringify( json );
-             } )
-             .catch( error   => console.dir(error));
+            fetch(aEl.href+"/"+id, params )
+             .then( response =>{
+            	switch(response.status){
+            	case 204: alert(id+'번이 삭제 완료되었습니다.');
+            	
+            	fetch(aEl.href)  // == fetch(aEl.href, { method:'GET'})
+	             .then( response => response.json() )
+	             .then( articleList     => {
+	                 console.dir(articleList)
+	                 
+	                 let html = JSON.stringify(articleList) + "<br>"
+	                 html +="<table>"
+	                 html +="<tr><td>아이디</td><td>제목</td><td>내용</td>"
+	                 articleList.forEach((article, i)=>{
+	                 html 	 +=  "<tr>"
+	                 html 	 +=  "<td>"+ article.id +"</td>"
+	                 html 	 +=  "<td>"+ article.title +"</td>"
+	                 html 	 +=  "<td>"+ article.content +"</td>"
+	                 html 	 +=  "</tr>"
+	                 })
+	                 
+	                 html +="</table>"
+	                 outputEl.innerHTML = html;
+	             } )
+		            .catch( error   => console.dir(error));
+            	break;
+            	
+            	case 400: alert('삭제 실패. 다시 확인해주세요'); break;            	
+            	}
+             })
+             
             break;
         }
             
 	    }
+    })  // forEach end
+    
+    let parentNode = documnet.querySelector("#output");
+    parentNode.addEventListener('click',(e)=>{
+    	console.dir(e)
+    	
+    	
     })
     
   
