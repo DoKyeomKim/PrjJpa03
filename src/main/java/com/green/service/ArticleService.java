@@ -1,5 +1,6 @@
 package com.green.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import com.green.dto.ArticleForm;
 import com.green.entity.Article;
 import com.green.repository.ArticleRepository;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -84,9 +86,62 @@ public class ArticleService {
 		return target;
 
 	}
+
+	public List<Article> createArticles(List<ArticleForm> dtos) {
+		// 1. DTO 묶음을 엔티티 묶음으로 변환
+		List<Article> articleList = new ArrayList<Article>();
+		
+		for(ArticleForm dto : dtos) {
+			
+			Article article = dto.toEntity();
+			articleList.add(article);
+		}
+		
+		// 2. entity 묶음(articleList)을 DB에 저장한다.
+		for(int i=0; i<articleList.size(); i++) {
+			Article article = articleList.get(i);
+			articleRepository.save(article);			
+		}
+		
+		// 3. 강제 에러 발생시키기
+
+		 articleRepository.findById(-1L).orElseThrow(
+	     () -> new IllegalArgumentException("결제 실패!"));
+		
+		
+		
+		
+		return articleList;
+	}
+
+	//transaction 기능 활성화
+	@Transactional
+	public List<Article> createArticles2(List<ArticleForm> dtos) {
+		// 1. DTO 묶음을 엔티티 묶음으로 변환
+		List<Article> articleList = new ArrayList<Article>();
+		
+		for(ArticleForm dto : dtos) {
+			
+			Article article = dto.toEntity();
+			articleList.add(article);
+		}
+		
+		// 2. entity 묶음(articleList)을 DB에 저장한다.
+		for(int i=0; i<articleList.size(); i++) {
+			Article article = articleList.get(i);
+			articleRepository.save(article);			
+		}
+		
+		// 3. 강제 에러 발생시키기
+
+		 articleRepository.findById(-1L).orElseThrow(() -> 
+		 new IllegalArgumentException("결제 실패!"));
+		
+		
+		
+		
+		return articleList;
+	}
 	
 }
-
-
-
 

@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.green.dto.ArticleForm;
@@ -85,6 +86,40 @@ public class ArticleApiController {
 		   = ( deleted != null  ) 
 		   ? ResponseEntity.status(HttpStatus.NO_CONTENT).build()     
 		   : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+		
+		return result;
+	}
+	/*
+	 [
+		 {title : "시간예약", content : "1240"},
+		 {title : "테이블 지정", content : "A12"},
+		 {title : "메뉴 선택", content : "Branch A"}
+	 ]
+	*/
+	//Transaction : 세개의 DATA를 받아서 서비스 함수에 넘겨주고 결과를 받는다.
+	 
+	@PostMapping("/api/transaction-test")
+	public ResponseEntity<List<Article>> transaction(@RequestBody List<ArticleForm> dtos){
+		
+		List<Article> createdList = articleService.createArticles(dtos); 
+				
+		ResponseEntity<List<Article>> result
+		   = ( createdList != null  ) 
+		   ? ResponseEntity.status(HttpStatus.OK).body(createdList)     
+		   : ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+				
+		return result;
+	}
+
+	@PostMapping("/api/transaction-test2")
+	public ResponseEntity<List<Article>> transaction2(@RequestBody List<ArticleForm> dtos){
+		
+		List<Article> createdList = articleService.createArticles2(dtos); 
+		
+		ResponseEntity<List<Article>> result
+		= ( createdList != null  ) 
+		? ResponseEntity.status(HttpStatus.OK).body(createdList)     
+		: ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
 		
 		return result;
 	}

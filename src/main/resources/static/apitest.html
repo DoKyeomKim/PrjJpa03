@@ -33,6 +33,9 @@ color : #fff ;
     <li><a id="post" href="/api/articles">새글 추가(post)</a></li>
     <li><a id="patch" href="/api/articles">글 수정(patch)</a></li>
     <li><a id="delete" href="/api/articles">글 삭제(delete)</a></li>
+    <li>&nbsp;</li>
+    <li><a href="transact1" href="/api/transaction-test"> 트랜잭션 테스트(오류3개저장됨)</a></li>
+    <li><a href="transact2" href="/api/transaction-test2"> 트랜잭션 테스트(정상버전)</a></li>
   </ul>
   
   <script>
@@ -199,6 +202,63 @@ color : #fff ;
             	}
              })
              
+            break;
+        
+        	// 실행하면 500에러 발생하면서 3개의 data가 전부 입력된다. 
+        case "transact1":            	
+        	
+            params = {
+            		method : "POST",
+            		headers : {
+            			"Accept" : "application/json",
+            			"Content-Type" : "application/json",
+            			"Access-Control-Origin":"*"
+            		},
+            		body : JSON.stringify([
+            			 {title : "시간예약", content : "1240"},
+            			 {title : "테이블 지정", content : "A12"},
+            			 {title : "메뉴 선택", content : "Branch A"}
+            			 ]),
+            }
+            fetch('/api/transaction-test', params )
+             .then( response => response.json() )
+             .then( json     => {
+                 console.dir(json)
+                 outputEl.innerHTML = JSON.stringify( json );
+             } )
+             .catch( error   => {
+            	 alert("!!!!! 저장실패 !!!!!")            		 
+             });
+            console.dir("transact1");
+            
+            break;
+
+        case "transact2":            	
+        	
+            params = {
+            		method : "POST",
+            		headers : {
+            			"Accept" : "application/json",
+            			"Content-Type" : "application/json",
+            			"Access-Control-Origin":"*"
+            		},
+            		body : JSON.stringify(	 
+            			[
+            			 {title : "시간예약", content : "1240"},
+            			 {title : "테이블 지정", content : "A12"},
+            			 {title : "메뉴 선택", content : "Branch A"}
+            			 ])
+            }
+            fetch('/api/transaction-test', params )
+             .then( response => response.json() )
+             .then( json     => {
+                 console.dir(json)
+                 outputEl.innerHTML = JSON.stringify( json );
+             } )
+             .catch( error   => {
+            	 alert("!!!!! 저장실패 !!!!!")            		 
+             });
+            
             break;
         }
             
